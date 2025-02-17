@@ -6,7 +6,10 @@ import com.fozzle.project.spot.entity.SpotType;
 import com.fozzle.project.spot.repository.SpotRepository;
 import com.fozzle.project.story.repository.StoryRepository;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,13 +25,13 @@ public class SpotQueryService {
         //TODO 위치 기반으로 추천하는 기능 구현 필요
         List<Spot> spots;
         if (type.equals(SpotType.ALL)) {
-            spots = spotRepository.findSpotsByCityAndDistrict("부산광역시", "수영구");
+            spots = spotRepository.findTop6ByCityAndDistrict("부산광역시", "수영구");
 
         } else {
-            spots = spotRepository.findSpotsByType(type);
+            spots = spotRepository.findSpotsByCityAndDistrictAndType("부산광역시", "수영구", type);
         }
-        sortByCoordinates(spots);
-        List<SpotDto> result = spots.stream()
+        List<Spot> sorted = sortByNearest(spots);
+        List<SpotDto> result = sorted.stream()
             .map(SpotDto::of)
             .toList();
 
@@ -38,25 +41,51 @@ public class SpotQueryService {
     public List<SpotDto> recommendDistrictSpot(String city, String district, SpotType type) {
         List<Spot> spots;
         if (type.equals(SpotType.ALL)) {
-            spots = spotRepository.findSpotsByCityAndDistrict(city, district);
+            spots = spotRepository.findTop6ByCityAndDistrict(city, district);
         } else {
             spots = spotRepository.findSpotsByCityAndDistrictAndType(city, district, type);
         }
-        sortByCoordinates(spots);
-        List<SpotDto> result = spots.stream()
+        List<Spot> sorted = sortByNearest(spots);
+        List<SpotDto> result = sorted.stream()
             .map(SpotDto::of)
             .toList();
 
         return result;
     }
 
-    private static void sortByCoordinates(List<Spot> spots) {
-        spots.sort((s1, s2) -> {
-            if (s1.getX() != s2.getX()) {
-                return Double.compare(s1.getX(), s2.getX());
+    public List<Spot> sortByNearest(List<Spot> spots) {
+        if (spots.isEmpty()) {
+            return spots;
+        }
+
+        List<Spot> result = new ArrayList<>();
+        Set<Spot> visited = new HashSet<>();
+        Spot current = spots.get(0); // 시작점
+        result.add(current);
+        visited.add(current);
+
+        while (result.size() < spots.size()) {
+            Spot nearest = null;
+            double minDistance = Double.MAX_VALUE;
+
+            for (Spot spot : spots) {
+                if (!visited.contains(spot)) {
+                    double dist = current.distanceTo(spot);
+                    if (dist < minDistance) {
+                        minDistance = dist;
+                        nearest = spot;
+                    }
+                }
             }
-            return Double.compare(s1.getY(), s2.getY());
-        });
+
+            if (nearest != null) {
+                result.add(nearest);
+                visited.add(nearest);
+                current = nearest;
+            }
+        }
+
+        return result;
     }
 
     public List<String> readStoryIds(String spotId) {

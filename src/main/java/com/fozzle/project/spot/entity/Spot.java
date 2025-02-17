@@ -57,4 +57,8 @@ public class Spot {
     public void addStory() {
         this.storyCount++;
     }
+
+    public double distanceTo(Spot other) {
+        return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
+    }
 }
