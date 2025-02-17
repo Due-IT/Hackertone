@@ -7,6 +7,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,6 +36,14 @@ public class SpotQueryController {
         @RequestParam SpotType type
     ) {
         List<SpotDto> response = spotQueryService.recommendDistrictSpot(city, district, type);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(value = "/spots/{spotId}/story-list")
+    public ResponseEntity<?> readStoryIds(
+        @PathVariable String spotId
+    ) {
+        List<String> response = spotQueryService.readStoryIds(spotId);
         return ResponseEntity.ok(response);
     }
 

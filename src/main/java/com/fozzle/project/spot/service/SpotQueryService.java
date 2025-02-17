@@ -4,6 +4,7 @@ import com.fozzle.project.spot.dto.SpotDto;
 import com.fozzle.project.spot.entity.Spot;
 import com.fozzle.project.spot.entity.SpotType;
 import com.fozzle.project.spot.repository.SpotRepository;
+import com.fozzle.project.story.repository.StoryRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class SpotQueryService {
 
     private final SpotRepository spotRepository;
+    private final StoryRepository storyRepository;
 
     public List<SpotDto> recommendAroundSpot(Double nowX, Double nowY, SpotType type) {
         //TODO 위치 기반으로 추천하는 기능 구현 필요
@@ -55,5 +57,16 @@ public class SpotQueryService {
             }
             return Double.compare(s1.getY(), s2.getY());
         });
+    }
+
+    public List<String> readStoryIds(String spotId) {
+        Spot spot = spotRepository.findByUuid(spotId);
+
+        List<String> list = storyRepository.findStoriesBySpotId(spot.getId())
+            .stream()
+            .map(story -> story.getUuid())
+            .toList();
+
+        return list;
     }
 }
