@@ -1,6 +1,7 @@
 package com.fozzle.project.spot.service;
 
 import com.fozzle.project.spot.dto.SpotDto;
+import com.fozzle.project.spot.dto.SpotRecommendResponse;
 import com.fozzle.project.spot.entity.Spot;
 import com.fozzle.project.spot.entity.SpotType;
 import com.fozzle.project.spot.repository.SpotRepository;
@@ -21,7 +22,7 @@ public class SpotQueryService {
     private final SpotRepository spotRepository;
     private final StoryRepository storyRepository;
 
-    public List<SpotDto> recommendAroundSpot(Double nowX, Double nowY, SpotType type) {
+    public SpotRecommendResponse recommendAroundSpot(Double nowX, Double nowY, SpotType type) {
         //TODO 위치 기반으로 추천하는 기능 구현 필요
         List<Spot> spots;
         if (type.equals(SpotType.ALL)) {
@@ -30,30 +31,37 @@ public class SpotQueryService {
         } else {
             spots = spotRepository.findSpotsByCityAndDistrictAndType("부산광역시", "수영구", type);
         }
+
+        List<Double> center = calculateCenter(spots);
+
         List<Spot> sorted = sortByNearest(spots);
         List<SpotDto> result = sorted.stream()
             .map(SpotDto::of)
             .toList();
 
-        return result;
+        return SpotRecommendResponse.of(result, center);
     }
 
-    public List<SpotDto> recommendDistrictSpot(String city, String district, SpotType type) {
+    public SpotRecommendResponse recommendDistrictSpot(String city, String district,
+        SpotType type) {
         List<Spot> spots;
         if (type.equals(SpotType.ALL)) {
             spots = spotRepository.findTop6ByCityAndDistrict(city, district);
         } else {
             spots = spotRepository.findSpotsByCityAndDistrictAndType(city, district, type);
         }
+
+        List<Double> center = calculateCenter(spots);
+
         List<Spot> sorted = sortByNearest(spots);
         List<SpotDto> result = sorted.stream()
             .map(SpotDto::of)
             .toList();
 
-        return result;
+        return SpotRecommendResponse.of(result, center);
     }
 
-    public List<Spot> sortByNearest(List<Spot> spots) {
+    private List<Spot> sortByNearest(List<Spot> spots) {
         if (spots.isEmpty()) {
             return spots;
         }
@@ -86,6 +94,20 @@ public class SpotQueryService {
         }
 
         return result;
+    }
+
+    private List<Double> calculateCenter(List<Spot> spots) {
+        double sumX = 0;
+        double sumY = 0;
+        for (Spot spot : spots) {
+            sumX += spot.getX();
+            sumY += spot.getY();
+        }
+
+        double centerX = sumX / spots.size();
+        double centerY = sumY / spots.size();
+
+        return List.of(centerX, centerY);
     }
 
     public List<String> readStoryIds(String spotId) {
