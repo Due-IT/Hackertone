@@ -25,6 +25,7 @@ public class SpotQueryService {
         } else {
             spots = spotRepository.findSpotsByType(type);
         }
+        sortByCoordinates(spots);
         List<SpotDto> result = spots.stream()
             .map(SpotDto::of)
             .toList();
@@ -39,10 +40,20 @@ public class SpotQueryService {
         } else {
             spots = spotRepository.findSpotsByCityAndDistrictAndType(city, district, type);
         }
+        sortByCoordinates(spots);
         List<SpotDto> result = spots.stream()
             .map(SpotDto::of)
             .toList();
 
         return result;
+    }
+
+    private static void sortByCoordinates(List<Spot> spots) {
+        spots.sort((s1, s2) -> {
+            if (s1.getX() != s2.getX()) {
+                return Double.compare(s1.getX(), s2.getX());
+            }
+            return Double.compare(s1.getY(), s2.getY());
+        });
     }
 }
