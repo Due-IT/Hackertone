@@ -3,6 +3,7 @@ package com.fozzle.project.spot.presentation;
 import com.fozzle.project.spot.dto.SpotDto;
 import com.fozzle.project.spot.entity.SpotType;
 import com.fozzle.project.spot.service.SpotQueryService;
+import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,11 @@ public class SpotQueryController {
     }
 
     @GetMapping(value = "/spots/{spotId}/story-list")
+    @Operation(summary = "스토리 목록 조회",
+        description = "스토리 목록을 조회합니다.<br>"
+            + "현재 스토리가 있는 spotId는 다음과 같습니다.<br>"
+            + "엘까르니따스 광안리점 : 36638389-4bca-477c-b1b6-1f1d781f333a"
+    )
     public ResponseEntity<?> readStoryIds(
         @PathVariable String spotId
     ) {
