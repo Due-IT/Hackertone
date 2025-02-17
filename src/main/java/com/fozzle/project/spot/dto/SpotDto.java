@@ -21,7 +21,7 @@ public record SpotDto(
             spot.getName(),
             spot.getX(),
             spot.getY(),
-            spot.getAddress(),
+            spot.getCity() + " " + spot.getDistrict(),
             spot.getLikes(),
             spot.getThumbnail(),
             spot.getStoryCount(),

@@ -1,7 +1,6 @@
 package com.fozzle.project.spot.presentation;
 
 import com.fozzle.project.spot.dto.SpotDto;
-import com.fozzle.project.spot.entity.SpotType;
 import com.fozzle.project.spot.service.SpotQueryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +17,23 @@ public class SpotQueryController {
 
     private final SpotQueryService spotQueryService;
 
-    @GetMapping(value = "/recommend")
-    public ResponseEntity<?> recommendSpot(
+    @GetMapping(value = "/recommend/around")
+    public ResponseEntity<?> recommendAroundSpot(
         @RequestParam Double nowX,
         @RequestParam Double nowY,
-        @RequestParam SpotType type
+        @RequestParam String type
     ) {
-        List<SpotDto> response = spotQueryService.recommendSpot(type);
+        List<SpotDto> response = spotQueryService.recommendAroundSpot(nowX, nowY, type);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(value = "/recommend/district")
+    public ResponseEntity<?> recommendDistrictSpot(
+        @RequestParam String city,
+        @RequestParam String district,
+        @RequestParam String type
+    ) {
+        List<SpotDto> response = spotQueryService.recommendDistrictSpot(city, district, type);
         return ResponseEntity.ok(response);
     }
 

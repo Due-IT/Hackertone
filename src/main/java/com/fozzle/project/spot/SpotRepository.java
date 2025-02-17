@@ -10,4 +10,8 @@ import org.springframework.stereotype.Repository;
 public interface SpotRepository extends JpaRepository<Spot, Long> {
     List<Spot>  findSpotsByType(SpotType type);
 
+    List<Spot> findSpotsByCityAndDistrict(String city, String district);
+
+    List<Spot> findSpotsByCityAndDistrictAndType(String city, String district, SpotType type);
+
 }

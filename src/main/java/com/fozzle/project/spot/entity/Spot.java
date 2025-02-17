@@ -37,7 +37,9 @@ public class Spot {
 
     private Double y;
 
-    private String address;
+    private String city;
+
+    private String district;
 
     private int likes;
 
