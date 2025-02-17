@@ -17,4 +17,6 @@ public interface SpotRepository extends JpaRepository<Spot, Long> {
 
     Spot findByUuid(String uuid);
 
+    Spot findSpotById(Long id);
+
 }
