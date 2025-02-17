@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 
 public record StoryViewResponse(
     String spotId,
+    Double x,
+    Double y,
     String spotName,
     String storyId,
     String storyDescription,
@@ -19,6 +21,8 @@ public record StoryViewResponse(
     public static StoryViewResponse of(Story story, Spot spot, User user) {
         return new StoryViewResponse(
             spot.getUuid(),
+            spot.getX(),
+            spot.getY(),
             spot.getName(),
             story.getUuid(),
             story.getDescription(),
