@@ -2,25 +2,20 @@ package com.fozzle.project.spot.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "spots")
-@EntityListeners(AuditingEntityListener.class)
 public class Spot {
 
     @Id
@@ -57,5 +52,9 @@ public class Spot {
         this.x = x;
         this.y = y;
         this.type = type;
+    }
+
+    public void addStory() {
+        this.storyCount++;
     }
 }

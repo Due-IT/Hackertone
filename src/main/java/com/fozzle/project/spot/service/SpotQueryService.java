@@ -1,9 +1,9 @@
 package com.fozzle.project.spot.service;
 
-import com.fozzle.project.spot.SpotRepository;
 import com.fozzle.project.spot.dto.SpotDto;
 import com.fozzle.project.spot.entity.Spot;
 import com.fozzle.project.spot.entity.SpotType;
+import com.fozzle.project.spot.repository.SpotRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
