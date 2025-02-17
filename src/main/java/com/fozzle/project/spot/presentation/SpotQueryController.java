@@ -1,6 +1,7 @@
 package com.fozzle.project.spot.presentation;
 
 import com.fozzle.project.spot.dto.SpotDto;
+import com.fozzle.project.spot.dto.SpotRecommendResponse;
 import com.fozzle.project.spot.entity.SpotType;
 import com.fozzle.project.spot.service.SpotQueryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,17 +27,22 @@ public class SpotQueryController {
         @RequestParam Double nowY,
         @RequestParam SpotType type
     ) {
-        List<SpotDto> response = spotQueryService.recommendAroundSpot(nowX, nowY, type);
+        SpotRecommendResponse response = spotQueryService.recommendAroundSpot(nowX, nowY, type);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = "/recommend/district")
+    @Operation(summary = "지역기준 스팟 목록 조회",
+        description = "스팟 목록을 조회합니다.<br>"
+            + "city : 부산광역시<br>"
+            + "district : 수영구, 해운대구, 연제구<br>"
+    )
     public ResponseEntity<?> recommendDistrictSpot(
-        @RequestParam String city,
+        @RequestParam(defaultValue = "부산광역시") String city,
         @RequestParam String district,
         @RequestParam SpotType type
     ) {
-        List<SpotDto> response = spotQueryService.recommendDistrictSpot(city, district, type);
+        SpotRecommendResponse response = spotQueryService.recommendDistrictSpot(city, district, type);
         return ResponseEntity.ok(response);
     }
 
